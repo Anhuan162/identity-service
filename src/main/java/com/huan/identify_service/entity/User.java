@@ -1,39 +1,31 @@
 package com.huan.identify_service.entity;
 
-import com.huan.identify_service.dto.CreateUserRequest;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.Set;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
-@Entity
+@Getter
+@Setter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-@Data
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Entity
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
-    private String username;
-    private String password;
-    private String firstName;
-    private String lastName;
-    private LocalDate dob;
+    String id;
 
-    public static User from(CreateUserRequest request) {
-        return User.builder()
-                .username(request.getUsername())
-                .password(request.getPassword())
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .dob(request.getDob())
-                .build();
-    }
+    @Column(name = "username", unique = true, columnDefinition = "VARCHAR(255) COLLATE utf8mb4_unicode_ci")
+    String username;
+
+    String password;
+    String firstName;
+    LocalDate dob;
+    String lastName;
+
+    @ManyToMany
+    Set<Role> roles;
 }
